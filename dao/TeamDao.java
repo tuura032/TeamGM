@@ -16,30 +16,17 @@ public class TeamDao {
 	private Connection connection;
 	private PlayerDao playerDao;
 	private final String GET_TEAMS_QUERY = "SELECT * from teams";
-	private final String GET_TEAM_NAMES = "SELECT team_name FROM teams";
 	private final String GET_TEAMS_BY_TEAM_ID = "SELECT * FROM teams where id = ?";
 	private final String CREATE_TEAM = "INSERT INTO teams(team_name, salary_cap, cap_space, deadspace, season)"
 			+ "values(?, ?, ?, ?, ?)";
 	private final String DELETE_TEAM_BY_TEAM_ID = "DELETE FROM teams where id = ?";
 	private final String DELETE_ROSTER_BY_TEAM_ID = "DELETE FROM players where team_id = ?";
 	private final String DELETE_SALARIES_BY_PLAYER_ID = "DELETE FROM salary where player_id = ?";
-	private final String UPDATE_CAP_SPACE_SIGN = "UPDATE teams SET cap_space = ? WHERE id = ?";
-	private final String UPDATE_CAP_SPACE_CUT = "UPDATE teams SET cap_space = ?, deadspace = ? WHERE id = ?";
+	private final String UPDATE_CAP_SPACE = "UPDATE teams SET cap_space = ?, deadspace = ? WHERE id = ?";
 	
 	public TeamDao() {
 		connection = DBConnection.getConnection();
 		playerDao = new PlayerDao();
-	}
-	
-	// probably delete this....
-	public List<String> getTeamNames() throws SQLException {
-		ResultSet rs = connection.prepareStatement(GET_TEAM_NAMES).executeQuery();
-		List<String> team_names = new ArrayList<String>();
-		while (rs.next()) {
-			team_names.add(rs.getString(1));
-		}
-		return team_names;
-		
 	}
 	
 	public List<Team> getTeams() throws SQLException {
@@ -97,37 +84,9 @@ public class TeamDao {
 		ps.setInt(1, team_id);
 		ps.executeUpdate();
 	}
-
-	/*
-	 * See if I can condense this to 1 function for updating cap space.
-	 */
-	
-	public void updateCapSpaceSign(int teamId, int salary) throws SQLException {
-		int updated_cap_space = getTeamById(teamId).getCap_space() - salary;
-	
-		PreparedStatement ps = connection.prepareStatement(UPDATE_CAP_SPACE_SIGN);
-		ps.setInt(1, updated_cap_space);
-		ps.setInt(2, teamId);
-		ps.executeUpdate();
-	}
-	
-	public void updateCapSpaceCut(int teamId, PlayerSalary salary) throws SQLException {
-		Team team = getTeamById(teamId);
-		int cap_space = team.getCap_space();
-		int updated_deadspace = team.getDeadspace() + salary.getDeadspace();
-		int savings = (salary.getSalary() - salary.getDeadspace());
-		
-		int updated_cap_space = ((cap_space + savings) - salary.getDeadspace());
-		
-		PreparedStatement ps = connection.prepareStatement(UPDATE_CAP_SPACE_CUT);
-		ps.setInt(1, updated_cap_space);
-		ps.setInt(2, updated_deadspace);
-		ps.setInt(3, teamId);
-		ps.executeUpdate();
-	}
 	
 	public void updateCapSpace(Team team) throws SQLException {
-		PreparedStatement ps = connection.prepareStatement(UPDATE_CAP_SPACE_CUT);
+		PreparedStatement ps = connection.prepareStatement(UPDATE_CAP_SPACE);
 		ps.setInt(1, team.getCap_space());
 		ps.setInt(2, team.getDeadspace());
 		ps.setInt(3, team.getId());

@@ -125,7 +125,7 @@ public class PlayerDao {
 	}
 
 	/*
-	 * Unfinished update player methods
+	 * update player methods
 	 */
 	
 	public void updatePlayer(Player player) throws SQLException {
