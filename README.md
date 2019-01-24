@@ -1,7 +1,7 @@
 # TeamGM
 Build a roster keeping within the salary cap using a menu-driven application.
 
-Application
+application
 -----------
 <ul><li>Run application to begin the program</li>
 
@@ -9,7 +9,7 @@ Application
 
 dao
 ----------
-Dao contains all database queries for players and team data.
+<ul><li>Dao contains all database queries for players and team data.</li></ul>
 
 entity
 ---------
