@@ -444,34 +444,3 @@ public class Menu {
 		return check;
 	}
 }
-
-
-
-
-//menu hierarchy
-
-// Show All Teams
-	// CRUD Teams
-
-
-// Select Team by name
-	// CRUD Player (edit the roster)
-
-
-// all features
-
-// Player CRUD (and keep deadspace!)
-// Team CRUD (salarycap / deadspace, etc)
-// 
-// View Team Roster
-// View All players on a team at a position group (OL, DL, etc)
-// view all players on a team at a position (LG, NT, etc)
-
-// 
-
-/*
- * Design errors
- */
-//Problem: Each player has 1 team_id associated with it. 
-		// Solution: this program only works for player lifetime contracts, and team 2019 season. 
-		// Fix: re-do teams db. Each team has a sub DB of each season. 
