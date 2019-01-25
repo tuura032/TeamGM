@@ -29,10 +29,10 @@ public class Menu {
 			"6) Show Position Group",
 			"7) Show Starters",
 			"\nPLAYER OPTIONS\n--------------",
-			"6) Sign Player",
-			"7) Show Player Profile",
-			"8) Update Player Information",
-			"9) Cut a Player"
+			"8) Sign Player",
+			"9) Show Player Profile",
+			"10) Update Player Information",
+			"11) Cut a Player"
 			);
 	private List<String> offensive_positions = Arrays.asList(
 			"QB", "RB", "WR", "LT", "LG", "C", "RG", "RT", "TE");
