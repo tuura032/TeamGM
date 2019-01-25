@@ -26,14 +26,13 @@ public class Menu {
 			"3) Create Team",
 			"4) Delete Team",
 			"5) Show Cap Space",
+			"6) Show Position Group",
+			"7) Show Starters",
 			"\nPLAYER OPTIONS\n--------------",
 			"6) Sign Player",
 			"7) Show Player Profile",
 			"8) Update Player Information",
-			"9) Remove a Player From Team",
-			"\nTEAM BUILDING\n-------------",
-			"10) Show Position Group",
-			"11) Get Starters"
+			"9) Cut a Player"
 			);
 	private List<String> offensive_positions = Arrays.asList(
 			"QB", "RB", "WR", "LT", "LG", "C", "RG", "RT", "TE");
@@ -62,17 +61,17 @@ public class Menu {
 				} else if (selection.equals("5")) {
 					showCapSpace();
 				} else if (selection.equals("6")) {
-					signPlayer();
-				} else if (selection.equals("7")) {
-					getPlayer();
-				} else if (selection.equals("8")) {
-					updatePlayer();
-				} else if (selection.equals("9")) {
-					cutPlayer();
-				} else if (selection.equals("10")) {
 					showPositionGroup();
-				} else if (selection.equals("11")) {
+				} else if (selection.equals("7")) {
 					getStarters();
+				} else if (selection.equals("8")) {
+					signPlayer();
+				} else if (selection.equals("9")) {
+					getPlayer();
+				} else if (selection.equals("10")) {
+					updatePlayer();
+				} else if (selection.equals("11")) {
+					cutPlayer();
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -86,6 +85,8 @@ public class Menu {
 	}
 	
 	private void printMenu() {
+		
+		// Display list of options
 		System.out.println("Select an option :\n----------------");
 		for (int i = 0; i < options.size(); i++) {
 			System.out.println(options.get(i));
@@ -97,6 +98,8 @@ public class Menu {
 	 */
 	
 	private void displayTeams() throws SQLException {
+		
+		// instantiate and display all teams
 		List<Team> teams = teamDao.getTeams();
 		for (Team team : teams) {
 			System.out.println(team.getId() + ") " + team.getTeam_name());
@@ -104,6 +107,8 @@ public class Menu {
 	}
 	
 	private void createTeam() throws SQLException {
+		
+		// Get user Input
 		System.out.print("What team would you like to create? ");
 		String team_name = scanner.nextLine();
 		System.out.print("What season will this team describe? ");
@@ -112,21 +117,23 @@ public class Menu {
 		int salary_cap = Integer.parseInt(scanner.nextLine());
 		System.out.print("How much dead cap in this year? ");
 		int deadspace = Integer.parseInt(scanner.nextLine());
-		
 		int cap_space = salary_cap - deadspace;
-		
+
+		// Send Input to DB
 		teamDao.createTeam(team_name, salary_cap, cap_space, deadspace, season);
 		
 	}
 	
 	private void deleteTeam() throws SQLException {
+		
+		// Get ID of team to delete
 		System.out.println("Enter the ID of the team you wish to delete: ");
 		int team_id = Integer.parseInt(scanner.nextLine());
-		
 		System.out.println("Warning! This will delete all players and salaries on this roster.");
 		System.out.print("Continue deleting team? (y/n)");
 		String answer = scanner.nextLine();
 		
+		// delete team (and associated play and salaries) if input is valid
 		if (answer.equals("y") || answer.equals("yes")) {
 			teamDao.deleteTeamById(team_id);
 		} else if (answer.equals("n") || answer.equals("no")) {
@@ -137,10 +144,13 @@ public class Menu {
 	}
 	
 	private void displayTeamRoster() throws SQLException {
+		
+		// Get team by id
 		System.out.print("What's the team id? ");
 		int teamId = Integer.parseInt(scanner.nextLine());
 		Team team = teamDao.getTeamById(teamId);
 		
+		// Display each player on team and roster size
 		for (Player player : team.getRoster()) {
 			System.out.println(player.getFirst_name() + " " + player.getLast_name() + " - "
 					+ player.getPosition() + player.getDepth() + " (ID: " + player.getId() + ")");
@@ -149,11 +159,13 @@ public class Menu {
 	}
 	
 	private void showCapSpace() throws SQLException {
+		
+		// Get team by id
 		System.out.print("Enter teamId: ");
 		int teamId = Integer.parseInt(scanner.nextLine());
-		
 		Team team = teamDao.getTeamById(teamId);
 		
+		// Display Team Finances
 		System.out.println(team.getTeam_name() + " cap space: " + team.getCap_space() 
 			+ " remaining, and " + team.getDeadspace() + " in " + team.getSeason() + " deadspace");
 	}
@@ -163,6 +175,8 @@ public class Menu {
 	 */
 	
 	private void signPlayer() throws SQLException {
+		
+		// Get Player information from user
 		System.out.print("First name? ");
 		String first = scanner.nextLine();
 		System.out.print("Last name? ");
@@ -172,6 +186,8 @@ public class Menu {
 		System.out.print("Where is the player on the depth chart? (Enter 1 if starting): ");
 		int depth = Integer.parseInt(scanner.nextLine());
 		System.out.println("Please Select a Team By Id");
+		
+		// Display All Teams to Assist User
 		for (Team team : teamDao.getTeams()) {
 			System.out.println("\tTeam Name: " + team.getTeam_name() + " - Team ID: " + team.getId());
 		}
@@ -180,13 +196,19 @@ public class Menu {
 		
 		// before signing the player, I need to check to make sure I have enough cap space
 		
+		// Create a new player
 		playerDao.signPlayer(first, last, position, depth, team_id);
 		
+		// Create a new player salary
 		signContract(playerDao.getPlayer(first, last));
 	}
 	
 	private void signContract(Player player) throws SQLException {
+		
+		// Switch for calculating cap impact
 		String option = "Sign";
+		
+		// Get User Input for each contract year
 		System.out.print("How many years is the contract for? ");
 		int contract_length = Integer.parseInt(scanner.nextLine());
 		
@@ -198,11 +220,11 @@ public class Menu {
 			System.out.print("How much dead cap is there for cutting the player in year " + year + "? ");
 			int deadspace = Integer.parseInt(scanner.nextLine());
 			
+			// Create new player salary
 			playerDao.signContract(player.getId(), salary, year, deadspace);
 			
+			// Update Available Cap Space
 			if (year == current_year) {
-				
-				// also make sure this works since I updated getcontract details to take a player, not first/last
 				Team updated_team = calculateCapImpact(teamDao.getTeamById(player.getTeamId()), playerDao.getContractDetails(player).get(0), option);
 				teamDao.updateCapSpace(updated_team);
 			}
@@ -210,38 +232,48 @@ public class Menu {
 	}
 	
 	private void cutPlayer() throws SQLException {
+		
+		// switch for calculating cap impact
 		String option = "Cut";
+		
+		// Get Player to be cut and playersalary
 		System.out.print("Who do you want to cut? (full name) ");
 		String first = scanner.next();
 		String last = scanner.next();
 		
+		// try catch block here?
 		Player player = playerDao.getPlayer(first, last);
-		
 		PlayerSalary salary = playerDao.getContractDetails(player).get(0);
+		Team team = teamDao.getTeamById(player.getId());
 		
-		// I need to make sure I can afford to cut the player here.
-		
-		System.out.println("Cutting this player will result in dead cap of " + salary.getDeadspace() + " and savings of " + (salary.getSalary() - salary.getDeadspace()));
-		System.out.print("Continue? (y/n) ");
-		String answer = scanner.next();
-		
-		if (answer.equals("y") || answer.equals("yes")) {
-			
-			playerDao.deleteSalaryByPlayerId(player.getId());
-			playerDao.cutPlayerById(player.getId());
-			
-			Team team = calculateCapImpact(teamDao.getTeamById(player.getTeamId()), salary, option); 
-			
-			teamDao.updateCapSpace(team);
-			
-		} else if (answer.equals("n") || answer.equals("no")) {
-			System.out.println("Cancelled - no changes made.");
+		// Make sure user can afford to cut the player
+		if (team.getCap_space() < salary.getDeadspace()) {
+			System.out.println("Not enough cap space to cut this player.");
+			System.out.println("Cap Space: " + team.getCap_space() + "\tDeadspace created: " + salary.getDeadspace());
 		} else {
-			System.out.println("Invalid input.");
+			// Ensure user wants to cut player
+			System.out.println("Cutting this player will result in dead cap of " + salary.getDeadspace() + " and savings of " + (salary.getSalary() - salary.getDeadspace()));
+			System.out.print("Continue? (y/n) ");
+			String answer = scanner.next();
+			if (answer.equals("y") || answer.equals("yes")) {
+				playerDao.deleteSalaryByPlayerId(player.getId());
+				playerDao.cutPlayerById(player.getId());
+				
+				// Update Team Financials
+				Team updated_team = calculateCapImpact(teamDao.getTeamById(player.getTeamId()), salary, option); 
+				teamDao.updateCapSpace(updated_team);
+				
+			} else if (answer.equals("n") || answer.equals("no")) {
+				System.out.println("Cancelled - no changes made.");
+			} else {
+				System.out.println("Invalid input.");
+			}
 		}
 	}
 	
 	private Team calculateCapImpact(Team team, PlayerSalary salary, String option) throws SQLException {
+		
+		// Calculate Finances for cutting and signing players
 		if (option.equals("Cut")) {
 			int cap_space = team.getCap_space();
 			int updated_deadspace = team.getDeadspace() + salary.getDeadspace();
@@ -249,7 +281,6 @@ public class Menu {
 			int updated_cap_space = ((cap_space + savings));
 			team.setCap_space(updated_cap_space);
 			team.setDeadspace(updated_deadspace);
-			
 		} else if (option.equals("Sign")) {
 			int updated_cap_space = team.getCap_space() - salary.getSalary();
 			team.setCap_space(updated_cap_space);
@@ -267,7 +298,7 @@ public class Menu {
 		List<PlayerSalary> salaries = playerDao.getContractDetails(player);
 		PlayerSalary contract = salaries.get(0);
 		System.out.println(player.getFirst_name() + " " + player.getLast_name() + " - " + 
-				player.getPosition() + player.getDepth());
+				player.getPosition() + player.getDepth() + " - Id: " + player.getId());
 		System.out.println("\t" + contract.getYear() + " Contract: " + contract.getSalary());
 		System.out.println("\t" + contract.getYear() + " Dead Cap: " + contract.getDeadspace());
 	}
