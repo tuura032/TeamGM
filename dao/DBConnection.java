@@ -1,17 +1,29 @@
 package dao;
 
+import java.io.Console;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Scanner;
 import java.sql.DriverManager;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.BufferedReader;
+
 
 
 public class DBConnection {
 	
+	private static Scanner scanner = new Scanner(System.in);
+	private static Console cs = System.console();
+	static String user = getUsername();
+	static String pw = getPassword();
+	
 	private final static String URL = "jdbc:mysql://localhost:3306/team_cap_space";
-	private final static String USERNAME = "root";
-	private final static String PASSWORD = "root";
+	private final static String USERNAME = user;
+	private final static String PASSWORD = pw;
 	private static Connection connection;
 	private static DBConnection instance;
+	
 	
 	
 	private DBConnection(Connection connection) {
@@ -32,5 +44,19 @@ public class DBConnection {
 		}
 		return DBConnection.connection;
 	}
+	
+	private static String getUsername() {
+		System.out.print("Username: ");
+		return scanner.nextLine();
+	}
+	
+	public static String getPassword() {
+		System.out.print("Password: ");
+		return scanner.nextLine();
+	}
+	
+
+	
+
 
 }
