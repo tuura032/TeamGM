@@ -15,4 +15,10 @@ entity
 ---------
 <ul><li>Player - An entity of a player, name, including position, depth, and team.</li>
 <li>PlayerSalary - An entity of a player's salary, including salary, year, and dead cap if cut.</li>
-<li>Team - An entity of a team, including team name, year, available cap space, and the roster of players on that team for that year.</li>
+<li>Team - An entity of a team, including team name, year, available cap space, and the roster of players on that team for that year.</li></ul>
+  
+options
+---------
+<ul><li>MenuOptions - An interface used to implement all functions from the menu.</li>
+  <li>Helpers - Implements additional needed functions.</li>
+  <li>Other Files - Classes that implement MenuOptions.</li></ul>
