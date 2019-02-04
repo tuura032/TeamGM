@@ -1,7 +1,7 @@
 # TeamGM
 Build a roster keeping within the salary cap using a menu-driven application.
 <ul><li>Database constructed with MySQL</li>
-  <li>Java 8 used to begin the application, connect to the database, create all entities, and run all program methods</li>
+  <li>Java 8 used to begin the application, connect to the database, create all entities, and run all program methods</li></ul>
 
 application
 -----------
