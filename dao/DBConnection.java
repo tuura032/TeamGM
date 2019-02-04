@@ -3,6 +3,9 @@ package dao;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Scanner;
+
+import application.Menu;
+
 import java.sql.DriverManager;
 
 
@@ -31,6 +34,7 @@ public class DBConnection {
 				connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
 				instance = new DBConnection(connection);
 				System.out.println("connection successful");
+				Menu.printWelcome();
 			} catch (SQLException e) {
 				System.out.println("Error connecting to db");
 				e.printStackTrace();

@@ -5,7 +5,7 @@ import java.util.List;
 
 import entity.Team;
 
-public class displayTeams implements MenuOptions {
+public class DisplayTeams implements MenuOptions {
 	
 	@Override
 	public void execute() throws SQLException {

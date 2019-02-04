@@ -2,7 +2,7 @@ package options;
 
 import java.sql.SQLException;
 
-public class deleteTeam implements MenuOptions {
+public class DeleteTeam implements MenuOptions {
 	
 	@Override
 	public void execute() throws SQLException {
