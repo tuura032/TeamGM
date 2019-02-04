@@ -8,6 +8,7 @@ public class Player {
 	private String position;
 	private int depth; 
 	private int teamId;
+	// Add PlayerSalary
 
 
 	public Player(int id, String first_name, String last_name, String position, int depth, int teamId) {

@@ -6,19 +6,17 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
-import dao.PlayerDao;
-import dao.TeamDao;
-import entity.Player;
-import entity.PlayerSalary;
-import entity.Team;
-
+import dao.*;
+import entity.*;
+import options.*;
 
 public class Menu {
 
 	private PlayerDao playerDao = new PlayerDao();
 	private TeamDao teamDao = new TeamDao();
 	private Scanner scanner = new Scanner(System.in);
-	private int current_year = 2019;
+
+	private final int CURRENT_YEAR = 2019;
 	private List<String> options = Arrays.asList(
 			"\nTEAM OPTIONS\n-------------",
 			"1) Show All Teams", 
@@ -34,12 +32,14 @@ public class Menu {
 			"10) Update Player Information",
 			"11) Cut a Player"
 			);
-	private List<String> offensive_positions = Arrays.asList(
-			"QB", "RB", "WR", "LT", "LG", "C", "RG", "RT", "TE");
-	private List<String> all_positions = Arrays.asList(
+	
+	// make all of them final and all caps
+	private final List<String> OFFENSIVE_POSITIONS = Arrays.asList(
+			"QB", "RB", "WR", "LT", "LG", "C", "RG", "RT", "TE"); 
+	private final List<String> ALL_POSITIONS = Arrays.asList(
 			"QB", "RB", "WR", "LT", "LG", "C", "RG", "RT", "TE",
 			"DE", "DT", "NT", "OLB", "MLB", "CB", "SS", "FS");
-	private List<String> defensive_positions = Arrays.asList(
+	private final List<String> DEFENSIVE_POSITIONS = Arrays.asList(
 			"DE", "DT", "NT", "OLB", "MLB", "CB", "SS", "FS");
 			
 	
@@ -51,13 +51,19 @@ public class Menu {
 			
 			try {
 				if (selection.equals("1")) {
-					displayTeams();
+					//displayTeams();
+					MenuOptions menuOptions = new displayTeams();
+					menuOptions.execute();
 				} else if (selection.equals("2")) {
 					displayTeamRoster();
 				} else if (selection.equals("3")) {
-					createTeam();
+					//createTeam();
+					MenuOptions menuOptions = new createTeam();
+					menuOptions.execute();
 				} else if (selection.equals("4")) {
-					deleteTeam();
+					//deleteTeam();
+					MenuOptions menuOptions = new deleteTeam();
+					menuOptions.execute();
 				} else if (selection.equals("5")) {
 					showCapSpace();
 				} else if (selection.equals("6")) {
@@ -88,60 +94,62 @@ public class Menu {
 		
 		// Display list of options
 		System.out.println("Select an option :\n----------------");
-		for (int i = 0; i < options.size(); i++) {
+		for (int i = 0, size = options.size(); i < size; i++) {
 			System.out.println(options.get(i));
 		}
+		
+
 	}
 	
 	/*
 	 * Team related functions
 	 */
 	
-	private void displayTeams() throws SQLException {
-		
-		// instantiate and display all teams
-		List<Team> teams = teamDao.getTeams();
-		for (Team team : teams) {
-			System.out.println(team.getId() + ") " + team.getTeam_name());
-		}
-	}
+//	private void displayTeams() throws SQLException {
+//		
+//		// instantiate and display all teams
+//		List<Team> teams = teamDao.getTeams();
+//		for (Team team : teams) {
+//			System.out.println(team.getId() + ") " + team.getTeam_name());
+//		}
+//	}
 	
-	private void createTeam() throws SQLException {
-		
-		// Get user Input
-		System.out.print("What team would you like to create? ");
-		String team_name = scanner.nextLine();
-		System.out.print("What season will this team describe? ");
-		int season = Integer.parseInt(scanner.nextLine());
-		System.out.print("Projected Salary cap? ");
-		int salary_cap = Integer.parseInt(scanner.nextLine());
-		System.out.print("How much dead cap in this year? ");
-		int deadspace = Integer.parseInt(scanner.nextLine());
-		int cap_space = salary_cap - deadspace;
-
-		// Send Input to DB
-		teamDao.createTeam(team_name, salary_cap, cap_space, deadspace, season);
-		
-	}
+//	private void createTeam() throws SQLException {
+//		
+//		// Get user Input
+//		System.out.print("What team would you like to create? ");
+//		String teamName = scanner.nextLine();
+//		System.out.print("What season will this team describe? ");
+//		int season = Integer.parseInt(scanner.nextLine());
+//		System.out.print("Projected Salary cap? ");
+//		int salaryCap = Integer.parseInt(scanner.nextLine());
+//		System.out.print("How much dead cap in this year? ");
+//		int deadspace = Integer.parseInt(scanner.nextLine());
+//		int capSpace = salaryCap - deadspace;
+//
+//		// Send Input to DB
+//		teamDao.createTeam(teamName, salaryCap, capSpace, deadspace, season);
+//		
+//	}
 	
-	private void deleteTeam() throws SQLException {
-		
-		// Get ID of team to delete
-		System.out.println("Enter the ID of the team you wish to delete: ");
-		int team_id = Integer.parseInt(scanner.nextLine());
-		System.out.println("Warning! This will delete all players and salaries on this roster.");
-		System.out.print("Continue deleting team? (y/n)");
-		String answer = scanner.nextLine();
-		
-		// delete team (and associated play and salaries) if input is valid
-		if (answer.equals("y") || answer.equals("yes")) {
-			teamDao.deleteTeamById(team_id);
-		} else if (answer.equals("n") || answer.equals("no")) {
-			System.out.println("Cancelled - no changes made.");
-		} else {
-			System.out.println("Invalid input.");
-		}
-	}
+//	private void deleteTeam() throws SQLException {
+//		
+//		// Get ID of team to delete
+//		System.out.println("Enter the ID of the team you wish to delete: ");
+//		int team_id = Integer.parseInt(scanner.nextLine());
+//		System.out.println("Warning! This will delete all players and salaries on this roster.");
+//		System.out.print("Continue deleting team? (y/n) ");
+//		String answer = scanner.nextLine();
+//		
+//		// delete team (and associated play and salaries) if input is valid
+//		if (answer.equals("y") || answer.equals("yes")) {
+//			teamDao.deleteTeamById(team_id);
+//		} else if (answer.equals("n") || answer.equals("no")) {
+//			System.out.println("Cancelled - no changes made.");
+//		} else {
+//			System.out.println("Invalid input.");
+//		}
+//	}
 	
 	private void displayTeamRoster() throws SQLException {
 		
@@ -194,7 +202,7 @@ public class Menu {
 		System.out.print("Team Id? ");
 		int team_id = Integer.parseInt(scanner.nextLine());
 		
-		// before signing the player, I need to check to make sure I have enough cap space
+		// before signing the player, ensure enough cap space
 		
 		// Create a new player
 		playerDao.signPlayer(first, last, position, depth, team_id);
@@ -224,7 +232,7 @@ public class Menu {
 			playerDao.signContract(player.getId(), salary, year, deadspace);
 			
 			// Update Available Cap Space
-			if (year == current_year) {
+			if (year == CURRENT_YEAR) {
 				Team updated_team = calculateCapImpact(teamDao.getTeamById(player.getTeamId()), playerDao.getContractDetails(player).get(0), option);
 				teamDao.updateCapSpace(updated_team);
 			}
@@ -289,8 +297,10 @@ public class Menu {
 	}
 	
 	private void getPlayer() throws SQLException {
-		System.out.print("Which player do you want information on? (full name) ");
 		
+		// Displays information on a player
+		System.out.print("Which player do you want information on? (full name) ");
+
 		String first = scanner.next();
 		String last = scanner.next();
 		scanner.nextLine();
@@ -305,6 +315,8 @@ public class Menu {
 	
 	
 	private void updatePlayer() throws SQLException {
+		
+		// Update Player information or player salary information
 		System.out.println("Which player would you like to update? ");
 		System.out.print("First name: ");
 		String first = scanner.nextLine();
@@ -316,9 +328,10 @@ public class Menu {
 		System.out.print("Would you like to update? 1) info 2) salary?");
 		String answer = scanner.nextLine();
 		
+		
 		if (answer.equals("1") || answer.equals("info")) {
 			
-			
+			// update player
 			System.out.println("Current name: " + player.getFirst_name() + " " + player.getLast_name());
 			System.out.print("Enter new first name: ");
 			String new_first = scanner.nextLine();
@@ -340,7 +353,8 @@ public class Menu {
 			System.out.println("Update complete!");
 			
 		} else if (answer.equals("2") || answer.equals("salary")) {
-			// get salary object
+		
+			// update salary
 			PlayerSalary salary = playerDao.getContractDetails(player).get(0);
 			System.out.println("Current contract for " + player.getFirst_name() + " " + player.getLast_name());
 			System.out.println(salary.getYear() + " Salary: " + salary.getSalary() + " Dead cap: " + salary.getDeadspace());
@@ -375,7 +389,7 @@ public class Menu {
 		String user_position = scanner.nextLine();
 		
 		// If valid, select the team and display the position
-		if (!isValidPosition(user_position, all_positions)) {
+		if (!isValidPosition(user_position, ALL_POSITIONS)) {
 			System.out.println("invalid input.");
 		} else {
 			// Select team from list of teams
@@ -432,10 +446,9 @@ public class Menu {
 		List<Player> roster = new ArrayList<Player>();
 		roster = team.getRoster();
 		
-		// This might be bad design - I made a copy of the roster, and I'm removing players from the roster as I go
-		// My goal was to only have to deal with each player only 1 time, as I found that to avoid the nested loops I'd have to start over with my entity + db design.
+		// Iterate through roster, displaying only offensive or defensive starters
 		if (selection.toLowerCase().equals("offense")) {
-			for (String position : offensive_positions) {
+			for (String position : OFFENSIVE_POSITIONS) {
 				for (int i = 0; i < roster.size(); i++) {
 					if (roster.get(i).getPosition().equals(position) && roster.get(i).getDepth() == 1) {
 						System.out.println(roster.get(i).getFirst_name() + " " + roster.get(i).getLast_name() + " " + roster.get(i).getPosition() + roster.get(i).getDepth());
@@ -448,7 +461,7 @@ public class Menu {
 				}
 			}
 		} else {
-			for (String position : defensive_positions) {
+			for (String position : DEFENSIVE_POSITIONS) {
 				for (int i = 0; i < roster.size(); i++) {
 					if (roster.get(i).getPosition().equals(position) && roster.get(i).getDepth() == 1) {
 						System.out.println(roster.get(i).getFirst_name() + " " + roster.get(i).getLast_name() + " " + roster.get(i).getPosition() + roster.get(i).getDepth());
@@ -465,6 +478,8 @@ public class Menu {
 	}
 	
 	private boolean isValidPosition(String user_position, List<String> positions) {
+		
+		// Checks to confirm position group is valid
 		boolean check = false;
 		for (String position : positions) {
 			if (position.equals(user_position)) {

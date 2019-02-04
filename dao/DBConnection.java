@@ -1,20 +1,14 @@
 package dao;
 
-import java.io.Console;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Scanner;
 import java.sql.DriverManager;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.BufferedReader;
-
 
 
 public class DBConnection {
 	
 	private static Scanner scanner = new Scanner(System.in);
-	private static Console cs = System.console();
 	static String user = getUsername();
 	static String pw = getPassword();
 	
