@@ -26,7 +26,6 @@ public class PlayerDao {
 	private final String CUT_PLAYER_BY_ID = "DELETE FROM players where id = ?";
 	private final String DELETE_SALARY_BY_PLAYER_ID = "DELETE FROM salary where player_id = ?";
 
-	
 	public PlayerDao() {
 		connection = DBConnection.getConnection();
 	}
@@ -36,11 +35,9 @@ public class PlayerDao {
 		ps.setInt(1, teamId);
 		ResultSet rs = ps.executeQuery();
 		List<Player> roster = new ArrayList<Player>();
-		
 		while (rs.next()) {
 			roster.add(new Player(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getInt(5), rs.getInt(6)));
 		}
-		
 		return roster;
 	}
 	
@@ -55,17 +52,14 @@ public class PlayerDao {
 	}
 
 	public Player getPlayer(String first, String last) throws SQLException {
-
 		PreparedStatement ps = connection.prepareStatement(GET_PLAYER_BY_NAME);
 		ps.setString(1, first);
 		ps.setString(2, last);
 		ResultSet rs = ps.executeQuery();
-
 		Player player = null;
 		while (rs.next()) {
 			player = new Player(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getInt(5), rs.getInt(6));
 		}
-		
 		return player;
 	}
 
@@ -76,7 +70,6 @@ public class PlayerDao {
 		ps.setInt(3, year);
 		ps.setInt(4, deadspace);
 		ps.executeUpdate();
-		
 	}
 	
 	public void cutPlayerById(int id) throws SQLException {
@@ -91,7 +84,7 @@ public class PlayerDao {
 		ps.executeUpdate();
 	}
 
-	// Note: This only gets the first year of the salary!!!!! 
+	// returns first year of player contract
 	public List<PlayerSalary> getContractDetails(Player player) throws SQLException {
 		PreparedStatement ps = connection.prepareStatement(GET_PLAYER_SALARY);
 		ps.setInt(1, player.getId());
@@ -107,7 +100,7 @@ public class PlayerDao {
 	}
 
 	/*
-	 * update player methods
+	 * update methods
 	 */
 	
 	public void updatePlayer(Player player) throws SQLException {
